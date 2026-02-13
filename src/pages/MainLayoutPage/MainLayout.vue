@@ -26,7 +26,13 @@
         easing="ease-out"
         class-name="my-fade-content"
       >
-        <StarBorder color="white" speed="2s" :thickness="10" style="width: 350px; margin-top: 20vh">
+        <StarBorder
+          @click="CreateSheetRedirect"
+          color="white"
+          speed="2s"
+          :thickness="10"
+          style="width: 350px; margin-top: 20vh"
+        >
           <h2>Novo personagem</h2>
           <p>Criar um personagem para uma nova campanha</p>
         </StarBorder>
@@ -51,6 +57,7 @@
 
 <script setup>
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import PillNav from '@/component/PillNav/PillNav.vue'
 import LightPillar from '@/component/LightPillar/LightPillar.vue'
 import FadeContent from '@/component/FadeContent/FadeContent.vue'
@@ -62,6 +69,12 @@ const navItems = ref([
   { label: 'Downloads', href: '/downloads' },
   { label: 'Sair', href: '/' },
 ])
+
+const router = useRouter()
+
+function CreateSheetRedirect() {
+  router.push('/createSheet')
+}
 </script>
 
 <style scoped>

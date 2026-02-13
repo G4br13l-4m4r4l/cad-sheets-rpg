@@ -18,6 +18,11 @@ const router = createRouter({
       name: 'Download',
       component: () => import('@/pages/Downloads/DownloadPage.vue'),
     },
+    {
+      path: '/createSheet',
+      name: 'CreateSheet',
+      component: () => import('@/pages/CreateSheet/CreateSheetPage.vue'),
+    },
   ],
 })
 

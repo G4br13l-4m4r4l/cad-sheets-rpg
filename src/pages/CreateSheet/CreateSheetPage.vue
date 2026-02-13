@@ -18,7 +18,7 @@
     <PillNav logo="/favicon.ico" :items="navItems" className="pill-nav" />
     <div class="content">
       <BlurText
-        text="Downloads"
+        text="Criar Personagem"
         :delay="130"
         class-name="page-title"
         animate-by="letters"
@@ -36,27 +36,51 @@
         easing="ease-out"
         class-name="my-fade-content"
       >
-        <div class="downloads-table-wrap">
-          <table class="downloads-table">
-            <thead>
-              <tr>
-                <th>Nome</th>
-                <th>Descrição</th>
-                <th>Tamanho</th>
-                <th>Ação</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="file in files" :key="file.id">
-                <td>{{ file.name }}</td>
-                <td class="desc-cell">{{ file.desc }}</td>
-                <td>{{ file.size }}</td>
-                <td>
-                  <button class="action-btn" @click="handleDownload(file)">Baixar</button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+        <div class="downloads-table-wrap" style="width: min(1200px, 92%)">
+          <Stepper
+            :initial-step="1"
+            :on-step-change="handleStepChange"
+            :on-final-step-completed="handleFinalStepCompleted"
+            back-button-text="Anterior"
+            next-button-text="Próximo"
+            :bordered="false"
+            :max-width="'none'"
+          >
+            <div>
+              <h2 class="stepper-title">Welcome to the Vue Bits stepper!</h2>
+              <p class="stepper-text">Check out the next step!</p>
+            </div>
+
+            <div>
+              <h2 class="stepper-title">Step 2</h2>
+              <img
+                style="
+                  height: 100px;
+                  width: 100%;
+                  object-fit: cover;
+                  border-radius: 15px;
+                  margin-top: 1em;
+                "
+                src="https://example.com/image.jpg"
+                alt="Example"
+              />
+              <p class="stepper-text">Custom step content!</p>
+            </div>
+
+            <div>
+              <h2 class="stepper-title">How about an input?</h2>
+              <input
+                v-model="name"
+                class="mt-2 px-3 py-2 border border-gray-300 rounded-md w-full"
+                placeholder="Your name?"
+              />
+            </div>
+
+            <div>
+              <h2 class="stepper-title">Final Step</h2>
+              <p class="stepper-text">You made it!</p>
+            </div>
+          </Stepper>
         </div>
       </FadeContent>
     </div>
@@ -69,6 +93,7 @@ import PillNav from '@/component/PillNav/PillNav.vue'
 import LightPillar from '@/component/LightPillar/LightPillar.vue'
 import FadeContent from '@/component/FadeContent/FadeContent.vue'
 import BlurText from '@/component/BlurText/BlurText.vue'
+import Stepper from '@/component/Stepper/Stepper.vue'
 
 const navItems = ref([
   { label: 'Home', href: '/main' },
@@ -83,9 +108,9 @@ const files = ref([
   { id: 3, name: 'Mapa da Região', desc: 'Mapa detalhado em alta resolução.', size: '3.8 MB' },
 ])
 
-function handleDownload(file) {
-  console.log('Baixar:', file.name)
-}
+const name = ref('')
+const handleStepChange = (step) => {}
+const handleFinalStepCompleted = () => {}
 </script>
 
 <style scoped>
@@ -139,9 +164,12 @@ function handleDownload(file) {
   font-weight: 600;
   color: #000;
 }
-.content[data-v-33b4df09] {
-  height: 0;
-  min-height: 0;
+
+:where(.downloads-table-wrap) .stepper-title {
+  color: #2106a7ff;
+}
+:where(.downloads-table-wrap) .stepper-text {
+  color: #cfcfcf;
 }
 
 :where(.downloads-table-wrap) {
