@@ -133,7 +133,7 @@ function handleDownload(file) {
 
 .page-title {
   display: block;
-  margin: 100px 0px;
+  margin: 100px 0px 0px 0px;
   text-align: center;
   font-size: 2rem;
   font-weight: 600;
