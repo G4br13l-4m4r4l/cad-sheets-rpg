@@ -73,7 +73,7 @@ import BlurText from '@/component/BlurText/BlurText.vue'
 const navItems = ref([
   { label: 'Home', href: '/main' },
   { label: 'Personagens', href: '/main' },
-  { label: 'Downloads', href: '/main' },
+  { label: 'Downloads', href: '/downloads' },
   { label: 'Sair', href: '/' },
 ])
 
