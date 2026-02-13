@@ -70,9 +70,12 @@ async function onSubmit() {
         router.push({ name: 'MainLayout' })
       }
     }
-  } finally {
-    isLoading.value = false
+  } catch (e) {
+    console.error('Login error:', e)
   }
+  // finally {
+  //   isLoading.value = false
+  // }
 }
 </script>
 

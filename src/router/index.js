@@ -13,6 +13,11 @@ const router = createRouter({
       name: 'MainLayout',
       component: () => import('@/pages/MainLayoutPage/MainLayout.vue'),
     },
+    {
+      path: '/downloads',
+      name: 'Download',
+      component: () => import('@/pages/Downloads/DownloadPage.vue'),
+    },
   ],
 })
 
