@@ -1,14 +1,16 @@
 <template>
   <div
     class="stepper-root"
-    v-bind="$attrs"
     :style="{
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'flex-start',
       width: '100%',
       height: 'auto',
+      boxSizing: 'border-box',
+      overflow: 'hidden',
     }"
+    v-bind="$attrs"
   >
     <div :class="stepCircleContainerClassName" :style="getCardStyle()">
       <div
@@ -17,7 +19,7 @@
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'flex-start',
-          width: '100%',
+          width: '800px',
           marginBottom: isCompleted ? '0' : '2rem',
         }"
       >

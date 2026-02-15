@@ -41,10 +41,10 @@
             :initial-step="1"
             :on-step-change="handleStepChange"
             :on-final-step-completed="handleFinalStepCompleted"
+            :width="'800px'"
             back-button-text="Anterior"
             next-button-text="Próximo"
             :bordered="false"
-            :max-width="'none'"
           >
             <div>
               <h2 class="stepper-title">Welcome to the Vue Bits stepper!</h2>
@@ -99,13 +99,8 @@ const navItems = ref([
   { label: 'Home', href: '/main' },
   { label: 'Personagens', href: '/main' },
   { label: 'Downloads', href: '/downloads' },
+  { label: 'Configurações', href: '/userConfig' },
   { label: 'Sair', href: '/' },
-])
-
-const files = ref([
-  { id: 1, name: 'Manual do Sistema', desc: 'Guia completo de uso e atalhos.', size: '1.2 MB' },
-  { id: 2, name: 'Ficha de Personagem', desc: 'Modelo editável para campanhas.', size: '240 KB' },
-  { id: 3, name: 'Mapa da Região', desc: 'Mapa detalhado em alta resolução.', size: '3.8 MB' },
 ])
 
 const name = ref('')
@@ -173,7 +168,7 @@ const handleFinalStepCompleted = () => {}
 }
 
 :where(.downloads-table-wrap) {
-  width: min(900px, 92%);
+  width: min(1200px, 92%);
   margin: 0 auto;
   background: rgba(8, 8, 12, 0.6);
   border: 1px solid rgba(255, 255, 255, 0.08);
