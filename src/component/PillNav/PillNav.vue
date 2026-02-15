@@ -1,26 +1,26 @@
 <script setup lang="ts">
-import { gsap } from 'gsap';
-import { computed, onBeforeUnmount, onMounted, ref, useTemplateRef, watch } from 'vue';
+import { gsap } from 'gsap'
+import { computed, onBeforeUnmount, onMounted, ref, useTemplateRef, watch } from 'vue'
 
 type PillNavItem = {
-  label: string;
-  href?: string;
-  ariaLabel?: string;
-};
+  label: string
+  href?: string
+  ariaLabel?: string
+}
 
 interface PillNavProps {
-  logo: string;
-  logoAlt?: string;
-  items: PillNavItem[];
-  activeHref?: string;
-  className?: string;
-  ease?: string;
-  baseColor?: string;
-  pillColor?: string;
-  hoveredPillTextColor?: string;
-  pillTextColor?: string;
-  onMobileMenuClick?: () => void;
-  initialLoadAnimation?: boolean;
+  logo: string
+  logoAlt?: string
+  items: PillNavItem[]
+  activeHref?: string
+  className?: string
+  ease?: string
+  baseColor?: string
+  pillColor?: string
+  hoveredPillTextColor?: string
+  pillTextColor?: string
+  onMobileMenuClick?: () => void
+  initialLoadAnimation?: boolean
 }
 
 const props = withDefaults(defineProps<PillNavProps>(), {
@@ -30,188 +30,192 @@ const props = withDefaults(defineProps<PillNavProps>(), {
   baseColor: '#fff',
   pillColor: '#060010',
   hoveredPillTextColor: '#060010',
-  initialLoadAnimation: true
-});
+  initialLoadAnimation: true,
+})
 
-const resolvedPillTextColor = props.pillTextColor ?? props.baseColor;
-const isMobileMenuOpen = ref(false);
-const circleRefs = ref<Array<HTMLSpanElement | null>>([]);
-const tlRefs = ref<Array<gsap.core.Timeline | null>>([]);
-const activeTweenRefs = ref<Array<gsap.core.Tween | null>>([]);
-const logoImgRef = useTemplateRef('logoImgRef');
-const logoTweenRef = ref<gsap.core.Tween | null>(null);
-const hamburgerRef = useTemplateRef('hamburgerRef');
-const mobileMenuRef = useTemplateRef('mobileMenuRef');
-const navItemsRef = useTemplateRef('navItemsRef');
-const logoRef = useTemplateRef('logoRef');
+const resolvedPillTextColor = props.pillTextColor ?? props.baseColor
+const isMobileMenuOpen = ref(false)
+const circleRefs = ref<Array<HTMLSpanElement | null>>([])
+const tlRefs = ref<Array<gsap.core.Timeline | null>>([])
+const activeTweenRefs = ref<Array<gsap.core.Tween | null>>([])
+const logoImgRef = useTemplateRef('logoImgRef')
+const logoTweenRef = ref<gsap.core.Tween | null>(null)
+const hamburgerRef = useTemplateRef('hamburgerRef')
+const mobileMenuRef = useTemplateRef('mobileMenuRef')
+const navItemsRef = useTemplateRef('navItemsRef')
+const logoRef = useTemplateRef('logoRef')
 
 watch(
   () => props.items,
-  items => {
-    circleRefs.value = new Array(items.length).fill(null);
-    tlRefs.value = new Array(items.length).fill(null);
-    activeTweenRefs.value = new Array(items.length).fill(null);
+  (items) => {
+    circleRefs.value = new Array(items.length).fill(null)
+    tlRefs.value = new Array(items.length).fill(null)
+    activeTweenRefs.value = new Array(items.length).fill(null)
   },
-  { immediate: true }
-);
+  { immediate: true },
+)
 
 const layout = () => {
-  circleRefs.value.forEach(circle => {
-    if (!circle?.parentElement) return;
+  circleRefs.value.forEach((circle) => {
+    if (!circle?.parentElement) return
 
-    const pill = circle.parentElement as HTMLElement;
-    const rect = pill.getBoundingClientRect();
-    const { width: w, height: h } = rect;
-    const R = ((w * w) / 4 + h * h) / (2 * h);
-    const D = Math.ceil(2 * R) + 2;
-    const delta = Math.ceil(R - Math.sqrt(Math.max(0, R * R - (w * w) / 4))) + 1;
-    const originY = D - delta;
+    const pill = circle.parentElement as HTMLElement
+    const rect = pill.getBoundingClientRect()
+    const { width: w, height: h } = rect
+    const R = ((w * w) / 4 + h * h) / (2 * h)
+    const D = Math.ceil(2 * R) + 2
+    const delta = Math.ceil(R - Math.sqrt(Math.max(0, R * R - (w * w) / 4))) + 1
+    const originY = D - delta
 
-    circle.style.width = `${D}px`;
-    circle.style.height = `${D}px`;
-    circle.style.bottom = `-${delta}px`;
+    circle.style.width = `${D}px`
+    circle.style.height = `${D}px`
+    circle.style.bottom = `-${delta}px`
 
     gsap.set(circle, {
       xPercent: -50,
       scale: 0,
-      transformOrigin: `50% ${originY}px`
-    });
+      transformOrigin: `50% ${originY}px`,
+    })
 
-    const label = pill.querySelector<HTMLElement>('.pill-label');
-    const white = pill.querySelector<HTMLElement>('.pill-label-hover');
+    const label = pill.querySelector<HTMLElement>('.pill-label')
+    const white = pill.querySelector<HTMLElement>('.pill-label-hover')
 
-    if (label) gsap.set(label, { y: 0 });
-    if (white) gsap.set(white, { y: h + 12, opacity: 0 });
+    if (label) gsap.set(label, { y: 0 })
+    if (white) gsap.set(white, { y: h + 12, opacity: 0 })
 
-    const index = circleRefs.value.indexOf(circle);
-    if (index === -1) return;
+    const index = circleRefs.value.indexOf(circle)
+    if (index === -1) return
 
-    tlRefs.value[index]?.kill();
-    const tl = gsap.timeline({ paused: true });
+    tlRefs.value[index]?.kill()
+    const tl = gsap.timeline({ paused: true })
 
-    tl.to(circle, { scale: 1.2, xPercent: -50, duration: 2, ease: props.ease, overwrite: 'auto' }, 0);
+    tl.to(
+      circle,
+      { scale: 1.2, xPercent: -50, duration: 2, ease: props.ease, overwrite: 'auto' },
+      0,
+    )
 
     if (label) {
-      tl.to(label, { y: -(h + 8), duration: 2, ease: props.ease, overwrite: 'auto' }, 0);
+      tl.to(label, { y: -(h + 8), duration: 2, ease: props.ease, overwrite: 'auto' }, 0)
     }
 
     if (white) {
-      gsap.set(white, { y: Math.ceil(h + 100), opacity: 0 });
-      tl.to(white, { y: 0, opacity: 1, duration: 2, ease: props.ease, overwrite: 'auto' }, 0);
+      gsap.set(white, { y: Math.ceil(h + 100), opacity: 0 })
+      tl.to(white, { y: 0, opacity: 1, duration: 2, ease: props.ease, overwrite: 'auto' }, 0)
     }
 
-    tlRefs.value[index] = tl;
-  });
-};
+    tlRefs.value[index] = tl
+  })
+}
 
-const onResize = () => layout();
+const onResize = () => layout()
 
 onMounted(() => {
-  layout();
+  layout()
 
-  window.addEventListener('resize', onResize);
+  window.addEventListener('resize', onResize)
 
   if (document.fonts) {
-    document.fonts.ready.then(layout).catch(() => {});
+    document.fonts.ready.then(layout).catch(() => {})
   }
 
-  const menu = mobileMenuRef.value;
+  const menu = mobileMenuRef.value
   if (menu) {
-    gsap.set(menu, { visibility: 'hidden', opacity: 0, scaleY: 1, y: 0 });
+    gsap.set(menu, { visibility: 'hidden', opacity: 0, scaleY: 1, y: 0 })
   }
 
   if (props.initialLoadAnimation) {
-    const logo = logoRef.value;
-    const navItems = navItemsRef.value;
+    const logo = logoRef.value
+    const navItems = navItemsRef.value
 
     if (logo) {
-      gsap.set(logo, { scale: 0 });
+      gsap.set(logo, { scale: 0 })
       gsap.to(logo, {
         scale: 1,
         duration: 0.6,
-        ease: props.ease
-      });
+        ease: props.ease,
+      })
     }
 
     if (navItems) {
-      gsap.set(navItems, { width: 0, overflow: 'hidden' });
+      gsap.set(navItems, { width: 0, overflow: 'hidden' })
       gsap.to(navItems, {
         width: 'auto',
         duration: 0.6,
-        ease: props.ease
-      });
+        ease: props.ease,
+      })
     }
   }
-});
+})
 
 onBeforeUnmount(() => {
-  window.removeEventListener('resize', onResize);
-});
+  window.removeEventListener('resize', onResize)
+})
 
 watch(
   () => [props.items, props.ease, props.initialLoadAnimation],
   () => {
-    layout();
+    layout()
   },
-  { deep: true }
-);
+  { deep: true },
+)
 
 const handleEnter = (i: number) => {
-  const tl = tlRefs.value[i];
-  if (!tl) return;
-  activeTweenRefs.value[i]?.kill();
+  const tl = tlRefs.value[i]
+  if (!tl) return
+  activeTweenRefs.value[i]?.kill()
   activeTweenRefs.value[i] = tl.tweenTo(tl.duration(), {
     duration: 0.3,
     ease: props.ease,
-    overwrite: 'auto'
-  });
-};
+    overwrite: 'auto',
+  })
+}
 
 const handleLeave = (i: number) => {
-  const tl = tlRefs.value[i];
-  if (!tl) return;
-  activeTweenRefs.value[i]?.kill();
+  const tl = tlRefs.value[i]
+  if (!tl) return
+  activeTweenRefs.value[i]?.kill()
   activeTweenRefs.value[i] = tl.tweenTo(0, {
     duration: 0.2,
     ease: props.ease,
-    overwrite: 'auto'
-  });
-};
+    overwrite: 'auto',
+  })
+}
 
 const handleLogoEnter = () => {
-  const img = logoImgRef.value;
-  if (!img) return;
-  logoTweenRef.value?.kill();
-  gsap.set(img, { rotate: 0 });
+  const img = logoImgRef.value
+  if (!img) return
+  logoTweenRef.value?.kill()
+  gsap.set(img, { rotate: 0 })
   logoTweenRef.value = gsap.to(img, {
     rotate: 360,
     duration: 0.2,
     ease: props.ease,
-    overwrite: 'auto'
-  });
-};
+    overwrite: 'auto',
+  })
+}
 
 const toggleMobileMenu = () => {
-  const newState = !isMobileMenuOpen.value;
-  isMobileMenuOpen.value = newState;
+  const newState = !isMobileMenuOpen.value
+  isMobileMenuOpen.value = newState
 
-  const hamburger = hamburgerRef.value;
-  const menu = mobileMenuRef.value;
+  const hamburger = hamburgerRef.value
+  const menu = mobileMenuRef.value
 
   if (hamburger) {
-    const lines = hamburger.querySelectorAll('.hamburger-line');
+    const lines = hamburger.querySelectorAll('.hamburger-line')
     if (newState) {
-      gsap.to(lines[0], { rotation: 45, y: 3, duration: 0.3, ease: props.ease });
-      gsap.to(lines[1], { rotation: -45, y: -3, duration: 0.3, ease: props.ease });
+      gsap.to(lines[0], { rotation: 45, y: 3, duration: 0.3, ease: props.ease })
+      gsap.to(lines[1], { rotation: -45, y: -3, duration: 0.3, ease: props.ease })
     } else {
-      gsap.to(lines[0], { rotation: 0, y: 0, duration: 0.3, ease: props.ease });
-      gsap.to(lines[1], { rotation: 0, y: 0, duration: 0.3, ease: props.ease });
+      gsap.to(lines[0], { rotation: 0, y: 0, duration: 0.3, ease: props.ease })
+      gsap.to(lines[1], { rotation: 0, y: 0, duration: 0.3, ease: props.ease })
     }
   }
 
   if (menu) {
     if (newState) {
-      gsap.set(menu, { visibility: 'visible' });
+      gsap.set(menu, { visibility: 'visible' })
       gsap.fromTo(
         menu,
         { opacity: 0, y: 10, scaleY: 1 },
@@ -221,9 +225,9 @@ const toggleMobileMenu = () => {
           scaleY: 1,
           duration: 0.3,
           ease: props.ease,
-          transformOrigin: 'top center'
-        }
-      );
+          transformOrigin: 'top center',
+        },
+      )
     } else {
       gsap.to(menu, {
         opacity: 0,
@@ -233,14 +237,14 @@ const toggleMobileMenu = () => {
         ease: props.ease,
         transformOrigin: 'top center',
         onComplete: () => {
-          gsap.set(menu, { visibility: 'hidden' });
-        }
-      });
+          gsap.set(menu, { visibility: 'hidden' })
+        },
+      })
     }
   }
 
-  props.onMobileMenuClick?.();
-};
+  props.onMobileMenuClick?.()
+}
 
 const isExternalLink = (href: string) =>
   href.startsWith('http://') ||
@@ -248,9 +252,9 @@ const isExternalLink = (href: string) =>
   href.startsWith('//') ||
   href.startsWith('mailto:') ||
   href.startsWith('tel:') ||
-  href.startsWith('#');
+  href.startsWith('#')
 
-const isRouterLink = (href?: string) => href && !isExternalLink(href);
+const isRouterLink = (href?: string) => href && !isExternalLink(href)
 
 const cssVars = computed(() => ({
   '--base': props.baseColor,
@@ -260,18 +264,21 @@ const cssVars = computed(() => ({
   '--nav-h': '42px',
   '--logo': '36px',
   '--pill-pad-x': '18px',
-  '--pill-gap': '3px'
-}));
+  '--pill-gap': '3px',
+}))
 
 const setCircleRef = (el: HTMLSpanElement | null, index: number) => {
   if (circleRefs.value.length > index) {
-    circleRefs.value[index] = el;
+    circleRefs.value[index] = el
   }
-};
+}
 </script>
 
 <template>
-  <div class="pillnav-root" :style="{ position: 'absolute', top: '1em', left: '0', zIndex: 1000, width: '100%' }">
+  <div
+    class="pillnav-root"
+    :style="{ position: 'absolute', top: '1em', left: '0', zIndex: 1000, width: '100%' }"
+  >
     <nav :class="['pillnav-nav', className]" aria-label="Primary" :style="cssVars">
       <component
         :is="isRouterLink(items?.[0]?.href) ? 'RouterLink' : 'a'"
@@ -284,7 +291,7 @@ const setCircleRef = (el: HTMLSpanElement | null, index: number) => {
         :style="{
           width: 'var(--nav-h)',
           height: 'var(--nav-h)',
-          background: 'var(--base, #000)'
+          background: 'var(--base, #000)',
         }"
         @mouseenter="handleLogoEnter"
       >
@@ -296,11 +303,16 @@ const setCircleRef = (el: HTMLSpanElement | null, index: number) => {
         class="pillnav-items"
         :style="{
           height: 'var(--nav-h)',
-          background: 'var(--base, #000)'
+          background: 'var(--base, #000)',
         }"
       >
         <ul role="menubar" class="pillnav-list" :style="{ gap: 'var(--pill-gap)' }">
-          <li v-for="(item, i) in items" :key="item.href || `item-${i}`" class="pillnav-li" role="none">
+          <li
+            v-for="(item, i) in items"
+            :key="item.href || `item-${i}`"
+            class="pillnav-li"
+            role="none"
+          >
             <component
               :is="isRouterLink(item.href) ? 'RouterLink' : 'a'"
               :to="isRouterLink(item.href) ? item.href : undefined"
@@ -310,7 +322,7 @@ const setCircleRef = (el: HTMLSpanElement | null, index: number) => {
                 background: 'var(--pill-bg, #fff)',
                 color: 'var(--pill-text, var(--base, #000))',
                 paddingLeft: 'var(--pill-pad-x)',
-                paddingRight: 'var(--pill-pad-x)'
+                paddingRight: 'var(--pill-pad-x)',
               }"
               :aria-label="item.ariaLabel || item.label"
               @mouseenter="handleEnter(i)"
@@ -320,10 +332,10 @@ const setCircleRef = (el: HTMLSpanElement | null, index: number) => {
                 class="hover-circle"
                 :style="{
                   background: 'var(--base, #000)',
-                  willChange: 'transform'
+                  willChange: 'transform',
                 }"
                 aria-hidden="true"
-                :ref="el => setCircleRef(el as HTMLSpanElement, i)"
+                :ref="(el) => setCircleRef(el as HTMLSpanElement, i)"
               />
               <span class="label-stack">
                 <span class="pill-label" :style="{ willChange: 'transform' }">
@@ -333,7 +345,7 @@ const setCircleRef = (el: HTMLSpanElement | null, index: number) => {
                   class="pill-label-hover"
                   :style="{
                     color: 'var(--hover-text, #fff)',
-                    willChange: 'transform, opacity'
+                    willChange: 'transform, opacity',
                   }"
                   aria-hidden="true"
                 >
@@ -360,18 +372,27 @@ const setCircleRef = (el: HTMLSpanElement | null, index: number) => {
         :style="{
           width: 'var(--nav-h)',
           height: 'var(--nav-h)',
-          background: 'var(--base, #000)'
+          background: 'var(--base, #000)',
         }"
       >
-        <span
-          class="hamburger-line"
-          :style="{ background: 'var(--pill-bg, #fff)' }"
-        />
-        <span
-          class="hamburger-line"
-          :style="{ background: 'var(--pill-bg, #fff)' }"
-        />
+        <span class="hamburger-line" :style="{ background: 'var(--pill-bg, #fff)' }" />
+        <span class="hamburger-line" :style="{ background: 'var(--pill-bg, #fff)' }" />
       </button>
+      <!-- <button
+        ref="hamburgerRef"
+        @click="toggleMobileMenu"
+        aria-label="Toggle menu"
+        :aria-expanded="isMobileMenuOpen"
+        class="pillnav-hamburger"
+        :style="{
+          width: 'var(--nav-h)',
+          height: 'var(--nav-h)',
+          background: 'var(--base, #000)',
+        }"
+      >
+        <span class="hamburger-line" :style="{ background: 'var(--pill-bg, #fff)' }" />
+        <span class="hamburger-line" :style="{ background: 'var(--pill-bg, #fff)' }" />
+      </button> -->
     </nav>
 
     <div
@@ -383,7 +404,7 @@ const setCircleRef = (el: HTMLSpanElement | null, index: number) => {
         top: '3em',
         right: '1rem',
         left: '1rem',
-        background: 'var(--base, #f0f0f0)'
+        background: 'var(--base, #f0f0f0)',
       }"
     >
       <ul class="pillnav-mobile-list">
@@ -396,14 +417,14 @@ const setCircleRef = (el: HTMLSpanElement | null, index: number) => {
             :style="{ background: 'var(--pill-bg, #fff)', color: 'var(--pill-text, #fff)' }"
             @mouseenter="
               (e: MouseEvent) => {
-                (e.currentTarget as HTMLAnchorElement).style.background = 'var(--base)';
-                (e.currentTarget as HTMLAnchorElement).style.color = 'var(--hover-text, #fff)';
+                ;(e.currentTarget as HTMLAnchorElement).style.background = 'var(--base)'
+                ;(e.currentTarget as HTMLAnchorElement).style.color = 'var(--hover-text, #fff)'
               }
             "
             @mouseleave="
               (e: MouseEvent) => {
-                (e.currentTarget as HTMLAnchorElement).style.background = 'var(--pill-bg, #fff)';
-                (e.currentTarget as HTMLAnchorElement).style.color = 'var(--pill-text, #fff)';
+                ;(e.currentTarget as HTMLAnchorElement).style.background = 'var(--pill-bg, #fff)'
+                ;(e.currentTarget as HTMLAnchorElement).style.color = 'var(--pill-text, #fff)'
               }
             "
           >
@@ -520,6 +541,8 @@ const setCircleRef = (el: HTMLSpanElement | null, index: number) => {
   border: 0;
   border-radius: 9999px;
   cursor: pointer;
+  visibility: hidden;
+  pointer-events: none;
 }
 .hamburger-line {
   border-radius: 4px;
@@ -547,5 +570,11 @@ const setCircleRef = (el: HTMLSpanElement | null, index: number) => {
   font-weight: 500;
   font-size: 16px;
   transition: all 0.2s ease;
+}
+@media (max-width: 768px) {
+  .pillnav-hamburger {
+    visibility: visible;
+    pointer-events: auto;
+  }
 }
 </style>
