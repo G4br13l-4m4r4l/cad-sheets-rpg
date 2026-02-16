@@ -39,19 +39,6 @@
         <div class="downloads-table-wrap">
           <form class="settings-form" @submit.prevent="submitForm">
             <div class="form-row">
-              <div class="avatar">
-                <img v-if="avatarPreview" :src="avatarPreview" alt="Avatar" />
-                <div v-else class="avatar-placeholder">Foto</div>
-              </div>
-              <div class="avatar-actions">
-                <label class="file-btn">
-                  Selecionar foto
-                  <input type="file" accept="image/*" @change="onAvatarChange" />
-                </label>
-                <button type="button" class="action-btn" @click="removeAvatar">Remover</button>
-              </div>
-            </div>
-            <div class="form-row">
               <label class="label">Nome de exibição</label>
               <input
                 v-model="displayName"
