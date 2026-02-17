@@ -41,7 +41,6 @@
             :initial-step="1"
             :on-step-change="handleStepChange"
             :on-final-step-completed="handleFinalStepCompleted"
-            :width="'800px'"
             back-button-text="Anterior"
             next-button-text="Próximo"
             :bordered="false"
@@ -175,7 +174,7 @@ const handleFinalStepCompleted = () => {}
   border-radius: 16px;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
   backdrop-filter: blur(6px) saturate(120%);
-  overflow: hidden;
+  overflow: visible;
 }
 
 :where(.downloads-table) {

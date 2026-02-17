@@ -46,7 +46,13 @@
         easing="ease-out"
         class-name="my-fade-content"
       >
-        <StarBorder color="white" speed="2s" :thickness="10" style="width: 350px; margin-top: 20vh">
+        <StarBorder
+          @click="MySheetsRedirect"
+          color="white"
+          speed="2s"
+          :thickness="10"
+          style="width: 350px; margin-top: 20vh"
+        >
           <h2>Meus Personagens</h2>
           <p>Visualizar lista e gerenciar personagens já criados</p>
         </StarBorder>
@@ -75,6 +81,9 @@ const router = useRouter()
 
 function CreateSheetRedirect() {
   router.push('/createSheet')
+}
+function MySheetsRedirect() {
+  router.push('/mySheets')
 }
 </script>
 

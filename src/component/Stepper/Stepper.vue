@@ -8,7 +8,7 @@
       width: '100%',
       height: 'auto',
       boxSizing: 'border-box',
-      overflow: 'hidden',
+      overflow: 'visible',
     }"
     v-bind="$attrs"
   >
@@ -83,7 +83,7 @@
               :initial="{ width: 0, backgroundColor: '#52525b' }"
               :animate="
                 currentStep > index + 1
-                  ? { width: '100%', backgroundColor: '#27ff64' }
+                  ? { width: '100%', backgroundColor: '#2106a7ff' }
                   : { width: 0, backgroundColor: '#52525b' }
               "
               :transition="{ type: 'spring', stiffness: 100, damping: 15, duration: 0.4 }"
@@ -98,7 +98,7 @@
         :style="{
           width: '100%',
           position: 'relative',
-          overflow: 'hidden',
+          overflow: 'visible',
           marginBottom: isCompleted ? '0' : '2rem',
           color: '#eaeaea',
         }"
@@ -239,7 +239,7 @@ const getStepIndicatorStyle = (step: number) => {
   switch (status) {
     case 'active':
     case 'complete':
-      return { backgroundColor: '#27FF64', color: '#fff' }
+      return { backgroundColor: '#2106a7ff', color: '#fff' }
     default:
       return { backgroundColor: '#222', color: '#a3a3a3' }
   }
@@ -288,7 +288,12 @@ const handleCustomStepClick = (clicked: number) => {
 const measureHeight = () => {
   nextTick(() => {
     if (contentRef.value) {
-      const height = contentRef.value.offsetHeight
+      const el = contentRef.value
+      const firstChild = el.firstElementChild as HTMLElement | null
+      const lastChild = el.lastElementChild as HTMLElement | null
+      const mt = firstChild ? parseFloat(getComputedStyle(firstChild).marginTop || '0') : 0
+      const mb = lastChild ? parseFloat(getComputedStyle(lastChild).marginBottom || '0') : 0
+      const height = el.scrollHeight + mt + mb
       if (height > 0 && height !== parentHeight.value) {
         parentHeight.value = height
       }
