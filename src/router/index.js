@@ -28,6 +28,11 @@ const router = createRouter({
       name: 'UserConfig',
       component: () => import('@/pages/UsersPage/Users.vue'),
     },
+    {
+      path: '/mySheets',
+      name: 'MySheets',
+      component: () => import('@/pages/MySheetsPage/MySheets.vue'),
+    },
   ],
 })
 
